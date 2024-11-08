@@ -6,22 +6,26 @@ import { pluck } from '../utils/utils';
 import { UtilsService } from '../utils/utils.service';
 
 describe('UsersService', () => {
-  let service: UsersService;
-  let utilsServiceMock = {
-    pluck: jest.fn()
-  }
+  let userService: UsersService;
+  let utilsService: UtilsService;
+  // let utilsServiceMock = {
+  //   pluck: jest.fn()
+  // }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [UsersService, {
-        provide: UtilsService, useValue: utilsServiceMock
-      }]
+      providers: [UsersService,
+      //    {
+      //   provide: UtilsService, useValue: utilsServiceMock
+      // }
+    ]
     });
-    service = TestBed.inject(UsersService);
+    userService = TestBed.inject(UsersService);
+    utilsService = TestBed.inject(UtilsService)
   });
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    expect(userService).toBeTruthy();
   });
 
 
@@ -31,8 +35,8 @@ describe('UsersService', () => {
         id: '2',
         name: 'Ganesh'
       }
-      service.addUser(user);
-      expect(service.users).toEqual([user])
+      userService.addUser(user);
+      expect(userService.users).toEqual([user])
     })
 
     // it('should')
@@ -40,8 +44,22 @@ describe('UsersService', () => {
 
   describe('getUserNames', () => {
     it('should pluck all user names from users', () => {
-      utilsServiceMock.pluck.mockReturnValue(['foo'])
-      expect(service.getUserNames()).toEqual(['foo'])
+      jest.spyOn(utilsService, 'pluck');
+      // userService.users = [
+      //   {
+      //     id: '2',
+      //     name: 'Ganesh'
+      //   }
+      // ];
+      const user: Users = {
+        id: '2',
+        name: 'Ganesh'
+      }
+      userService.addUser(user);
+      userService.getUserNames();
+      // utilsServiceMock.pluck.mockReturnValue(['foo'])
+      // expect(service.getUserNames()).toEqual(['foo'])
+      expect(utilsService.pluck).toHaveBeenCalledWith(userService.users, 'name')
     })
   })
 
